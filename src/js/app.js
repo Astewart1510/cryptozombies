@@ -114,7 +114,17 @@ App = {
                App.loading = false;
           });      
      },
-
+//new fuctions added
+     randomHex: function (dna) {
+          var HEXcolour = dna.toString(16).substring(0,6);
+          return "#" + HEXcolour;
+     },
+     invertHex: function (HEXcolour) {
+          var int = parseInt(HEXcolour,16);
+          var HEXcomplement = 0xffffff ^ int;
+          return "#" + HEXcomplement.toString(16);
+     },
+ // end of new functions added 
      displayZombie: function (id, name, dna, level, readyTime, winCount, lossCount) {
           // Retrieve the zombie placeholder
           var zombieRow = $('#zombieRow');
@@ -122,9 +132,11 @@ App = {
           // define the price for leveling up
           // should not be hard-coded in the final version
           var etherPrice = web3.toWei(0.001, "ether");
-      
+          
           // Retrieve and fill the zombie template
           var zombieTemplate = $('#zombieTemplate');
+          //zombieTemplate.find('.panel-heading').attr('style', randomHex(dna),invertHex(HEXcolour));
+          //zombieTemplate.find('.panel-heading').style.backgroundColor = "Red";
           zombieTemplate.find('.panel-title').text(name);
           zombieTemplate.find('.zombie-id').text(id);
           zombieTemplate.find('.zombie-dna').text(dna);
@@ -134,6 +146,11 @@ App = {
           zombieTemplate.find('.zombie-lossCount').text(lossCount);
           zombieTemplate.find('.btn-levelup').attr('data-id', id);
           zombieTemplate.find('.btn-levelup').attr('data-value', etherPrice);
+
+          var backgroundColor = App.randomHex(dna);
+          var color = App.invertHex(backgroundColor);
+
+          zombieTemplate.find('.panel-heading').attr('style', 'background-color:'+backgroundColor+';color:'+color);
       
           // add this new zombie to the placeholder
           zombieRow.append(zombieTemplate.html());
@@ -210,19 +227,22 @@ App = {
                     // reload the zombie list if event is triggered
                     App.reloadZombies();
                });
-               instance.NewLevel({}, {}).watch(function (error, event) {
-                    // log error if one occurs
-                    if (error) {
+               //added new from Question 3 b
+               instance.NewLevel({}, {}).watch(function (error,event) {
+                    //log error if one occurs
+                    if(error) {
                               console.error(error);
                     }
-                    // reload the zombie list if event is triggered
+                    // reload zombie list if event goes ahead
                     App.reloadZombies();
-               });
+               })
+               // end of added new
+               
           });
      }
-     randomHex: function (dna) {
-          
-     }
+     
+     
+    
 };
 
 $(function() {
